@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testCompile('io.github.bonigarcia:selenium-jupiter:3.3.0') {
+        exclude group: 'com.spotify', module: 'docker-client'
+    }
+    testImplementation('org.junit.jupiter:junit-jupiter:5.5.1')
+}
+
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
