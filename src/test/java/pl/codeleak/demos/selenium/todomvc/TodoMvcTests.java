@@ -1,7 +1,8 @@
 package pl.codeleak.demos.selenium.todomvc;
 
 import io.github.bonigarcia.seljup.SeleniumExtension;
-import org.junit.jupiter.api.BeforeEach;
+import io.github.bonigarcia.seljup.SingleSession;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,19 +12,26 @@ import org.openqa.selenium.support.PageFactory;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SeleniumExtension.class)
+@SingleSession
 @DisplayName("Managing Todos")
 class TodoMvcTests {
 
+    private final ChromeDriver driver;
     private TodoMvc todoMvc;
 
     private final String buyTheMilk = "Buy the milk";
     private final String cleanupTheRoom = "Clean up the room";
     private final String readTheBook = "Read the book";
 
-    @BeforeEach
-    void beforeEach(ChromeDriver driver) {
+    public TodoMvcTests(ChromeDriver driver) {
+        this.driver = driver;
         this.todoMvc = PageFactory.initElements(driver, TodoMvcPage.class);
         this.todoMvc.navigateTo();
+    }
+
+    @AfterEach
+    void storageCleanup() {
+        driver.getLocalStorage().clear();
     }
 
     @Test
