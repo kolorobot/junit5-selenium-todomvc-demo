@@ -7,14 +7,16 @@ repositories {
 }
 
 dependencies {
-    testCompile('io.github.bonigarcia:selenium-jupiter:3.3.0') {
-        exclude group: 'com.spotify', module: 'docker-client'
-    }
+    testCompile('io.github.bonigarcia:selenium-jupiter:3.3.0')
     testImplementation('org.junit.jupiter:junit-jupiter:5.5.1')
 }
 
 test {
+    // make system properties available in tests
+    systemProperties System.getProperties()
+    
     useJUnitPlatform()
+    
     testLogging {
         events "passed", "skipped", "failed"
     }

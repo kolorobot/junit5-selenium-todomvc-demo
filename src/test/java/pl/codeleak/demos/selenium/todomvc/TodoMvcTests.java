@@ -2,28 +2,28 @@ package pl.codeleak.demos.selenium.todomvc;
 
 import io.github.bonigarcia.seljup.SeleniumExtension;
 import io.github.bonigarcia.seljup.SingleSession;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SeleniumExtension.class)
 @SingleSession
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("Managing Todos")
 class TodoMvcTests {
 
-    private final ChromeDriver driver;
+    private final WebDriver driver;
     private TodoMvc todoMvc;
 
     private final String buyTheMilk = "Buy the milk";
     private final String cleanupTheRoom = "Clean up the room";
     private final String readTheBook = "Read the book";
 
-    public TodoMvcTests(ChromeDriver driver) {
+    public TodoMvcTests(WebDriver driver) {
         this.driver = driver;
         this.todoMvc = PageFactory.initElements(driver, TodoMvcPage.class);
         this.todoMvc.navigateTo();
@@ -31,10 +31,11 @@ class TodoMvcTests {
 
     @AfterEach
     void storageCleanup() {
-        driver.getLocalStorage().clear();
+        ((JavascriptExecutor) driver).executeScript("window.localStorage.clear()");
     }
 
     @Test
+    @Order(1)
     @DisplayName("Creates Todo with given name")
     void createsTodo() {
         // act
@@ -47,6 +48,7 @@ class TodoMvcTests {
     }
 
     @Test
+    @Order(2)
     @DisplayName("Creates Todos all with the same name")
     void createsTodosWithSameName() {
         // act
@@ -61,6 +63,7 @@ class TodoMvcTests {
     }
 
     @Test
+    @Order(3)
     @DisplayName("Edits inline double-clicked Todo")
     void editsTodo() {
         // arrange
@@ -76,6 +79,7 @@ class TodoMvcTests {
     }
 
     @Test
+    @Order(4)
     @DisplayName("Removes selected Todo")
     void removesTodo() {
         // arrange
@@ -91,6 +95,7 @@ class TodoMvcTests {
     }
 
     @Test
+    @Order(5)
     @DisplayName("Toggles selected Todo as completed")
     void togglesTodoCompleted() {
         todoMvc.createTodos(buyTheMilk, cleanupTheRoom, readTheBook);
@@ -106,6 +111,7 @@ class TodoMvcTests {
     }
 
     @Test
+    @Order(6)
     @DisplayName("Toggles all Todos as completed")
     void togglesAllTodosCompleted() {
         todoMvc.createTodos(buyTheMilk, cleanupTheRoom, readTheBook);
@@ -121,6 +127,7 @@ class TodoMvcTests {
     }
 
     @Test
+    @Order(7)
     @DisplayName("Clears all completed Todos")
     void clearsCompletedTodos() {
         todoMvc.createTodos(buyTheMilk, cleanupTheRoom);
