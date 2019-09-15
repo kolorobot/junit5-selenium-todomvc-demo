@@ -8,7 +8,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ExtendWith(SeleniumExtension.class)
 @SingleSession
@@ -42,8 +43,8 @@ class TodoMvcTests {
         todoMvc.createTodo(buyTheMilk);
         // assert
         assertAll(
-                () -> assertEquals(1, todoMvc.getTodosLeft()),
-                () -> assertTrue(todoMvc.todoExists(buyTheMilk))
+                () -> assertThat(todoMvc.getTodosLeft()).isOne(),
+                () -> assertThat(todoMvc.todoExists(buyTheMilk)).isTrue()
         );
     }
 
@@ -54,12 +55,12 @@ class TodoMvcTests {
         // act
         todoMvc.createTodos(buyTheMilk, buyTheMilk, buyTheMilk);
         // assert
-        assertEquals(3, todoMvc.getTodosLeft());
+        assertThat(todoMvc.getTodosLeft()).isEqualTo(3);
 
         // act
         todoMvc.showActive();
         // assert
-        assertEquals(3, todoMvc.getTodoCount());
+        assertThat(todoMvc.getTodoCount()).isEqualTo(3);
     }
 
     @Test
@@ -72,9 +73,9 @@ class TodoMvcTests {
         todoMvc.renameTodo(buyTheMilk, readTheBook);
         // assert
         assertAll(
-                () -> assertFalse(todoMvc.todoExists(buyTheMilk)),
-                () -> assertTrue(todoMvc.todoExists(readTheBook)),
-                () -> assertTrue(todoMvc.todoExists(cleanupTheRoom))
+                () -> assertThat(todoMvc.todoExists(buyTheMilk)).isFalse(),
+                () -> assertThat(todoMvc.todoExists(readTheBook)).isTrue(),
+                () -> assertThat(todoMvc.todoExists(cleanupTheRoom)).isTrue()
         );
     }
 
@@ -88,9 +89,9 @@ class TodoMvcTests {
         todoMvc.removeTodo(buyTheMilk);
         // assert
         assertAll(
-                () -> assertFalse(todoMvc.todoExists(buyTheMilk)),
-                () -> assertTrue(todoMvc.todoExists(cleanupTheRoom)),
-                () -> assertTrue(todoMvc.todoExists(readTheBook))
+                () -> assertThat(todoMvc.todoExists(buyTheMilk)).isFalse(),
+                () -> assertThat(todoMvc.todoExists(cleanupTheRoom)).isTrue(),
+                () -> assertThat(todoMvc.todoExists(readTheBook)).isTrue()
         );
     }
 
@@ -101,13 +102,13 @@ class TodoMvcTests {
         todoMvc.createTodos(buyTheMilk, cleanupTheRoom, readTheBook);
 
         todoMvc.completeTodo(buyTheMilk);
-        assertEquals(2, todoMvc.getTodosLeft());
+        assertThat(todoMvc.getTodosLeft()).isEqualTo(2);
 
         todoMvc.showCompleted();
-        assertEquals(1, todoMvc.getTodoCount());
+        assertThat(todoMvc.getTodoCount()).isOne();
 
         todoMvc.showActive();
-        assertEquals(2, todoMvc.getTodoCount());
+        assertThat(todoMvc.getTodoCount()).isEqualTo(2);
     }
 
     @Test
@@ -116,14 +117,18 @@ class TodoMvcTests {
     void togglesAllTodosCompleted() {
         todoMvc.createTodos(buyTheMilk, cleanupTheRoom, readTheBook);
 
+        assertThat(todoMvc.getTodos())
+                .hasSize(3)
+                .containsSequence(buyTheMilk, cleanupTheRoom, readTheBook);
+
         todoMvc.completeAllTodos();
-        assertEquals(0, todoMvc.getTodosLeft());
+        assertThat(todoMvc.getTodosLeft()).isZero();
 
         todoMvc.showCompleted();
-        assertEquals(3, todoMvc.getTodoCount());
+        assertThat(todoMvc.getTodoCount()).isEqualTo(3);
 
         todoMvc.showActive();
-        assertEquals(0, todoMvc.getTodoCount());
+        assertThat(todoMvc.getTodoCount()).isZero();
     }
 
     @Test
@@ -131,16 +136,21 @@ class TodoMvcTests {
     @DisplayName("Clears all completed Todos")
     void clearsCompletedTodos() {
         todoMvc.createTodos(buyTheMilk, cleanupTheRoom);
+
+        assertThat(todoMvc.getTodos())
+                .hasSize(2)
+                .containsSequence(buyTheMilk, cleanupTheRoom);
+
         todoMvc.completeAllTodos();
         todoMvc.createTodo(readTheBook);
 
         todoMvc.clearCompleted();
-        assertEquals(1, todoMvc.getTodosLeft());
+        assertThat(todoMvc.getTodosLeft()).isOne();
 
         todoMvc.showCompleted();
-        assertEquals(0, todoMvc.getTodoCount());
+        assertThat(todoMvc.getTodoCount()).isZero();
 
         todoMvc.showActive();
-        assertEquals(1, todoMvc.getTodoCount());
+        assertThat(todoMvc.getTodoCount()).isOne();
     }
 }

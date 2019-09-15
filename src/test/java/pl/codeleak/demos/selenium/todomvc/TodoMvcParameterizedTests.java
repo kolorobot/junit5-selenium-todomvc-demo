@@ -10,7 +10,8 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.support.PageFactory;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @ExtendWith(SeleniumExtension.class)
 @SingleSession
@@ -68,15 +69,15 @@ class TodoMvcParameterizedTests {
 
     private void assertSingleTodoShown(String todo) {
         assertAll(
-                () -> assertEquals(1, todoMvc.getTodoCount()),
-                () -> assertTrue(todoMvc.todoExists(todo))
+                () -> assertThat(todoMvc.getTodoCount()).isOne(),
+                () -> assertThat(todoMvc.todoExists(todo)).isTrue()
         );
     }
 
     private void assertNoTodoShown(String todo) {
         assertAll(
-                () -> assertEquals(0, todoMvc.getTodoCount()),
-                () -> assertFalse(todoMvc.todoExists(todo))
+                () -> assertThat(todoMvc.getTodoCount()).isZero(),
+                () -> assertThat(todoMvc.todoExists(todo)).isFalse()
         );
     }
 }
