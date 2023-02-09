@@ -1,30 +1,30 @@
 package pl.codeleak.demos.selenium.todomvc;
 
-import io.github.bonigarcia.seljup.SeleniumExtension;
+import io.github.bonigarcia.seljup.SeleniumJupiter;
 import io.github.bonigarcia.seljup.SingleSession;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.PageFactory;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-@ExtendWith(SeleniumExtension.class)
+@ExtendWith(SeleniumJupiter.class)
 @SingleSession
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @DisplayName("Managing Todos")
 class TodoMvcTests {
 
-    private final WebDriver driver;
+    private final RemoteWebDriver driver;
     private TodoMvc todoMvc;
 
     private final String buyTheMilk = "Buy the milk";
     private final String cleanupTheRoom = "Clean up the room";
     private final String readTheBook = "Read the book";
 
-    public TodoMvcTests(WebDriver driver) {
+    public TodoMvcTests(RemoteWebDriver driver) {
         this.driver = driver;
         this.todoMvc = PageFactory.initElements(driver, TodoMvcPage.class);
         this.todoMvc.navigateTo();

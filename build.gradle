@@ -6,18 +6,22 @@ repositories {
     mavenCentral()
 }
 
+sourceCompatibility = 17
+targetCompatibility = 17
+
 dependencies {
-    testCompile('io.github.bonigarcia:selenium-jupiter:3.3.0')
-    testCompile('org.assertj:assertj-core:3.13.2')
-    testImplementation('org.junit.jupiter:junit-jupiter:5.5.1')
+    testImplementation('io.github.bonigarcia:selenium-jupiter:4.3.3')
+    testImplementation 'org.seleniumhq.selenium:selenium-java:4.8.0'
+    testImplementation('org.assertj:assertj-core:3.21.0')
+    testImplementation('org.junit.jupiter:junit-jupiter:5.7.1')
 }
 
 test {
     // make system properties available in tests
     systemProperties System.getProperties()
-    
+
     useJUnitPlatform()
-    
+
     testLogging {
         events "passed", "skipped", "failed"
     }
